@@ -28,9 +28,14 @@ def costFunction(theta, X, y):
 	J = (1.0 / (2 * X.shape[0])) * sum(np.square(np.dot(X,theta) - y))
 	return J
 
-def main():
+def calculateResiduals(X, y, theta):
+	E = y - (np.dot(X,theta))
+	return E
+
+
+if __name__ == "__main__":
 	mincost = 5
-	maxIter = 10000
+	maxIter = 3000
 	alpha = 0.01
 	theta = np.array([[0],[0]],dtype='float32')
 	J = costFunction(theta, X, y)
@@ -47,19 +52,37 @@ def main():
 		t1History.append(theta[1][0])
 		JHistory.append(J)
 
-	
+	print('y = {} + {} * x'.format(theta[0][0], theta[1][0]))
+
+	plt.figure(figsize=(10,10))
+	plt.subplot(2,2,1)
+	plt.scatter(X[:,1],y, s=5, marker='.')
+	# plot our best fit line
+	xs = np.arange(5,25)
+	ys = theta[0][0]+theta[1][0]*xs
+	plt.xlabel('Population of City in 10,000s')
+	plt.ylabel('Profit in $10,000s')
+	plt.plot(xs,ys)
+
+	plt.subplot(2,2,2)
+	plt.xlabel('Iterations of GD')
+	plt.ylabel('Cost J(theta)')
 	plt.plot(JHistory)
-	plt.show()
 	
-	plt.scatter(X[:,1],y, s=20, marker='.')
-	xx = np.arange(5,23)
-	yy = theta[0][0]+theta[1][0]*xx
-	plt.plot(xx,yy)
+	plt.subplot(2,2,3)
+	plt.xlabel('Iterations')
+	plt.ylabel('Value of theta0')
+	plt.plot(t0History)
+
+	plt.subplot(2,2,4)
+	plt.xlabel('Iterations')
+	plt.ylabel('Value of theta1')
+	plt.plot(t1History)
 	plt.show()
-	print(theta)
 
-
-
-
-
-main()
+	E = calculateResiduals(X, y, theta)
+	plt.scatter(X[:,1], E, s=10, marker='.')
+	plt.xlabel('Observed Value')
+	plt.ylabel('Residual')
+	plt.grid()
+	plt.show()
